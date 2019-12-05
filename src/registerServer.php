@@ -1,5 +1,6 @@
 <?php
-
+session_start(); 
+$_SESSION["A"] = "B";
 $firstName = $lastName = $email = $password = "";
 $firstNameErr = $lastNameErr = $emailErr = $passwordErr = $repeatedPasswordErr = "";
 $connection = new mysqli("localhost", "root", "", "buziabook");
@@ -15,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $lastNameErr = "To pole jest wymagane!";
     }
     $lastName = mysqli_real_escape_string($connection, $_POST["lastName"]);
+    
 
     if (empty($_POST["email"])) {
         $emailErr = "To pole jest wymagane!";
@@ -43,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $sql = "INSERT INTO user(first_name, last_name, email, password) VALUES ('$firstName', '$lastName', '$email', '$password')";
             $connection->query($sql);
+            $_SESSION['loggedUser'] = $firstName;
         }
     }
     $connection->close();
