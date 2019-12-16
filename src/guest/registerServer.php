@@ -1,6 +1,5 @@
 <?php
 session_start(); 
-$_SESSION["A"] = "B";
 $firstName = $lastName = $email = $password = "";
 $firstNameErr = $lastNameErr = $emailErr = $passwordErr = $repeatedPasswordErr = "";
 $connection = new mysqli("localhost", "root", "", "buziabook");
@@ -28,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         if ($_POST["password"] === $_POST["repeatedPassword"]) {
             $password = mysqli_real_escape_string($connection, $_POST["password"]);
+            $password = password_hash($password, PASSWORD_DEFAULT);
         } else {
             $repeatedPasswordErr = "Hasła różnią się.";
         }
@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql = "INSERT INTO user(first_name, last_name, email, password) VALUES ('$firstName', '$lastName', '$email', '$password')";
             $connection->query($sql);
             $_SESSION['loggedUser'] = $firstName;
+            header('Location: /buziaBook/src/user/wall.php');
         }
     }
     $connection->close();

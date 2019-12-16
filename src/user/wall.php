@@ -11,13 +11,10 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand font-weight-light brand" href="">BuziaBook</a>
-        <form class="form-inline">
-            <button class="btn btn-outline-success p-2 mr-2">Zarejestruj się</button>
-            <button class="btn btn-outline-secondary p-2">Zaloguj się</button>
-        </form>
-    </nav>
+  <?php
+      require '../core/navbar.php';
+      require '/wallServer.php';
+    ?>
 
     <div class="container-fluid">
         <div class="row">
@@ -29,6 +26,15 @@
                     <li>Abominawka</li>
                 </ul>
             </div>
+
+            <?php
+            
+            $connection = new mysqli("localhost", "root", "", "buziabook");
+            $query = 'SELECT * FROM post';
+            $result = mysql_query($query, $connection);
+
+            ?>
+
             <div class="col-6">
                 <div class="card mt-4">
                     <div class="card-header">

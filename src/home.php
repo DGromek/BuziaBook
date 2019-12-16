@@ -11,22 +11,10 @@
     <title>Hello, world!</title>
   </head>
   <body>
-  <nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand font-weight-light brand" href="">BuziaBook</a>
-  <?php
-    session_start();
-    echo $_SESSION["loggedUser"];
-    if (isset($_SESSION["loggedUser"])) {
-        echo "<span>Witaj, " . $_SESSION['loggedUser'] . "!";
-    } else {
-        echo 
-        '<form class="form-inline">'.
-            '<a class="btn btn-outline-success p-2 mr-2" href="registerView.php">Zarejestruj się</a>'.
-            '<a class="btn btn-outline-secondary p-2" href="loginView.php">Zaloguj się</a>'.
-        '</form>';
-    }
+
+    <?php
+      require 'core/navbar.php'
     ?>
-    </nav>
 
     <div class="container mt-4">
         <h3>Some placeholder</h3>
