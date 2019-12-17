@@ -87,14 +87,18 @@ require 'addPost.php';
 
             <?php
             while ($row = mysqli_fetch_array($result)):
-                //echo json_encode($row) . '<br>';
+                
+                // foreach($row as $key => $value) {
+                //     echo $key . " - " . $value . "<br>"; 
+                // }
+
                 ?>
                 <div class="card mt-4 border border-info">
                     <div class="card-header">
                         <?php
                         echo $row['first_name'] . ' ' . $row['last_name'];
                         if (isset($row['name'])):
-                            echo ' ->' . $row['name'];
+                            echo ' <i class="fa fa-long-arrow-right " aria-hidden="true"></i> ' . $row['name'];
                         endif;
                         ?>
                     </div>
@@ -103,7 +107,13 @@ require 'addPost.php';
                     </div>
                     <div class="card-footer d-flex justify-content-between">
                         <span><a class="fa fa-thumbs-o-up" href="#"></a> <?php echo $row['likes_count'] ?> </span>
-                        <a href="">7 komentarzy</a>
+                        <?php 
+                        echo '<a href="getComments.php?id='. $row[0] .'">7 komentarzy</a>' 
+                        
+                    
+                        while ($row = mysqli_fetch_array($_SESSION['comments']))
+
+                        ?>
                     </div>
                 </div>
             <?php endwhile; ?>
@@ -124,5 +134,8 @@ require 'addPost.php';
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script> 
+
+</script>
 </body>
 </html>

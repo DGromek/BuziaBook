@@ -7,6 +7,10 @@
 }
 
 .fa-thumbs-o-up {
-    font-size: 32px;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.fa-thumbs-o-up:hover {
     text-decoration: none;
 }
