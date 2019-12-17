@@ -15,12 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = password_verify($password, $user['password']);
         if ($result) {
             $_SESSION["loggedUser"] = $user["first_name"];
+            $_SESSION['loggedUserEmail'] = $user["email"];
             header('Location: /buziaBook/src/user/wall.php');
         } else {
-            $loginErr = "Wprowadzono nieprawidłowe dane logowania!";
+            $loginErr = "Wprowadzono nieprawidłowe dane logowania! A";
         }
     } else {
-        $loginErr = "Wprowadzono nieprawidłowe dane logowania!";
+        $loginErr = "Wprowadzono nieprawidłowe dane logowania! B";
     }
 }
 ?>

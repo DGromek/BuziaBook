@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql = "INSERT INTO user(first_name, last_name, email, password) VALUES ('$firstName', '$lastName', '$email', '$password')";
             $connection->query($sql);
             $_SESSION['loggedUser'] = $firstName;
+            $_SESSION['loggedUserEmail'] = $email;
             header('Location: /buziaBook/src/user/wall.php');
         }
     }
