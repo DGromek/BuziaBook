@@ -1,0 +1,7 @@
+<?php
+
+$postContentErr = "";
+$commentContentErr = "";
+
+$successInfo = "";
+?>

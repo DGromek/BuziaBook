@@ -1,7 +1,7 @@
 <?php
 $postContent = "";
-$postContentErr = "";
-$postAddedInfo = "";
+require "variables.php";
+require "../core/dbAndSession.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["postContent"])) {
@@ -34,8 +34,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         //Saving post to db
         mysqli_query($connection, $addPostQuery);
-        $postAddedInfo = "Post dodano pomyślnie!";
+        $successInfo = "Post dodano pomyślnie!";
     }
 
 }
+
+$url = '/buziaBook/src/user/wall.php?';
+if (isset($_GET['group'])) {
+    $url = $url . 'group='.$_GET['group'];
+}
+
+header('Location: ' . $url);
 ?>

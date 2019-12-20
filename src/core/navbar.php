@@ -1,7 +1,6 @@
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand font-weight-light brand" href="">BuziaBook</a>
   <?php
-    session_start();
     if (isset($_SESSION["loggedUser"])) { 
         echo 
         '<form class="form-inline">'.
