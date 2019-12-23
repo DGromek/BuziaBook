@@ -127,7 +127,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
-                                <span><a class="fa fa-thumbs-o-up" href="#"></a> <?php echo $row['likes_count'] ?> </span>
+                                <!---<span><a class="fa fa-thumbs-o-up" href="#"></a> <?php //echo $row['likes_count'] ?> </span> ---> 
                                 <?php
                                 $flag = false;
                                 $commentUrl = 'addComment.php?';
