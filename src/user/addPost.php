@@ -1,14 +1,14 @@
 <?php
 $postContent = "";
-require "variables.php";
+
 require "../core/dbAndSession.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["postContent"])) {
-        $postContentErr = "To pole jest wymagane!";
+        $_SESSION['postContentErr'] = "To pole jest wymagane!";
     }
 
-    if (empty($postContentErr)) {
+    if (empty($_SESSION['postContentErr'])) {
         $loggedUserEmail = $_SESSION['loggedUserEmail'];
 
         //User
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($connection, $takeUserQuery);
         $resultArray = mysqli_fetch_assoc($result);
         $userId = $resultArray['id'];
-        $groupId = null;
+        $communityId = null;
 
         //Getting post content
         $postContent = mysqli_real_escape_string($connection, $_POST["postContent"]);
@@ -28,13 +28,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $findcommunityIdQuery = "SELECT id from community where name='$communityName'";
             $result = mysqli_query($connection, $findcommunityIdQuery);
             $resultArray = mysqli_fetch_assoc($result);
-            $groupId = $resultArray['id'];
-            $addPostQuery = "INSERT INTO post(user_id, content, community_id) VALUES ('$userId', '$postContent', '$groupId')";
+            $communityId = $resultArray['id'];
+            $addPostQuery = "INSERT INTO post(user_id, content, community_id) VALUES ('$userId', '$postContent', '$communityId')";
         }
 
         //Saving post to db
         mysqli_query($connection, $addPostQuery);
-        $successInfo = "Post dodano pomyślnie!";
+        $_SESSION['successInfo'] = "Post dodano pomyślnie!";
     }
 
 }

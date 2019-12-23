@@ -16,7 +16,6 @@
     <?php
     require '../core/dbAndSession.php';
     require '../core/navbar.php';
-    require 'variables.php';
     ?>
 
     <div class="container-fluid">
@@ -42,18 +41,32 @@
                     endwhile;
                     ?>
                 </ul>
+                <button data-toggle="modal" data-target="#addGroupModal" class="btn btn-success btn-sm">Utwórz nową grupę</button>
+                <button data-toggle="modal" data-target="#browseGroupModal" class="btn btn-success btn-sm">Przeglądaj grupy</button>
             </div>
             <div class="col-6">
                 <?php
-                if ($successInfo !== "") :
+                if (isset($_SESSION['successInfo'])) :
                 ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?php echo $successInfo ?>
+                        <?php echo $_SESSION['successInfo'] ?>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 <?php
+                $_SESSION['successInfo'] = null;
+                endif;
+                if (isset($_SESSION['groupNameErr'])) :
+                ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?php echo $_SESSION['groupNameErr'] ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <?php
+                $_SESSION['groupNameErr'] = null;
                 endif;
                 if (isset($_GET['group'])) {
                     $communityName = $_GET['group'];
@@ -79,26 +92,26 @@
                         <?php
                         $url = 'addPost.php?';
                         if (isset($_GET['group'])) {
-                            $url = $url . 'group='.$_GET['group'];
+                            $url = $url . 'group=' . $_GET['group'];
                         }
-                        echo '<form method="post" action="' . $url .'">';
+                        echo '<form method="post" action="' . $url . '">';
                         ?>
-                            <div class="form-group">
-                                <textarea class="form-control" name="postContent" rows="5"></textarea>
-                                <small class="error"><?php echo $postContentErr ?></small>
-                            </div>
-                            <button class="btn btn-info btn-block">Dodaj post!</button>
+                        <div class="form-group">
+                            <textarea class="form-control" name="postContent" rows="5"></textarea>
+                            <small class="error"><?php
+                            if (isset($_SESSION['postContentErr'])) {
+                                echo $_SESSION['postContentErr']; 
+                                $_SESSION['postContentErr'] = null;
+                            }
+                             ?></small>
+                        </div>
+                        <button class="btn btn-info btn-block">Dodaj post!</button>
                         </form>
                     </div>
                 </div>
 
                 <?php
                 while ($row = mysqli_fetch_array($result)) :
-
-                    // foreach($row as $key => $value) {
-                    //     echo $key . " - " . $value . "<br>"; 
-                    // }
-
                 ?>
                     <div class="card mt-4 border border-info">
                         <div class="card-header">
@@ -118,11 +131,16 @@
                                 <?php
                                 $flag = false;
                                 $commentUrl = 'addComment.php?';
+                                $getCommentUrl = 'getComments.php?';
+
                                 if (isset($_GET['group'])) {
-                                    $commentUrl = $commentUrl . 'group='.$_GET['group'];
+                                    $commentUrl = $commentUrl . 'group=' . $_GET['group'] . "&";
+                                    $getCommentUrl = $getCommentUrl . 'group=' . $_GET['group'] . "&";
                                 }
-                                $commentUrl = $commentUrl . "&postId=" . $row[0];
-                                echo '<a href="getComments.php?&postId=' . $row[0] . '">Zobacz komentarze</a></div>';
+                                $commentUrl = $commentUrl . "postId=" . $row[0];
+                                $getCommentUrl = $getCommentUrl . "postId=" . $row[0];
+
+                                echo '<a href="' . $getCommentUrl . '">Zobacz komentarze</a></div>';
                                 if (isset($_SESSION['comments'])) :
                                     foreach ($_SESSION['comments'] as $commentRow) :
                                         if ($commentRow['post_id'] === $row[0]) :
@@ -137,18 +155,25 @@
                                         <?php
                                         endif;
                                     endforeach;
-                                    if ($flag) :
-                                        echo '<form method="post" action="'. $commentUrl .'">';
+                                    if (isset($_SESSION['postId'])) :
+                                        if ($_SESSION['postId'] === $row[0]) :
+                                            echo '<form method="post" action="' . $commentUrl . '">';
                                         ?>
                                             <div class="form-group mx-2 px-2">
                                                 <label>Dodaj komentarz</label>
                                                 <?php echo '<input type="hidden" id="custId" name="custId" value="">' ?>
                                                 <textarea class="form-control " name="commentContent" rows="2"></textarea>
-                                                <small class="error"><?php echo $commentContentErr ?></small>
+                                                <small class="error"><?php 
+                                                if (isset($_SESSION['commentContentErr'])) {
+                                                    echo $_SESSION['commentContentErr'];
+                                                    $_SESSION['commentContentErr'] = null;
+                                                }
+                                                ?></small>
                                                 <button class="mt-3 btn btn-info btn-block">Dodaj komentarz!</button>
                                             </div>
-                                        </form>
+                                            </form>
                                 <?php
+                                        endif;
                                     endif;
                                 endif;
                                 ?>
@@ -156,11 +181,73 @@
                         </div>
                     <?php endwhile; ?>
                     </div>
-
             </div>
-
         </div>
+    </div>
 
+
+    <!-- Add group modal -->
+    <div class="modal fade" id="addGroupModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Nowa grupa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="addCommunity.php">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Nazwa grupy:</label>
+                            <input type="text" class="form-control" name="groupName">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Opis grupy:</label>
+                            <textarea class="form-control" name="groupDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+
+                        <button class="btn btn-info">Utwórz grupę</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="browseGroupModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-white">
+                    <h5 class="modal-title" id="exampleModalLabel">Dostępne grupy: </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?php
+
+                    $getCommunitiesQuery = "SELECT * FROM community";
+                    $communities = mysqli_query($connection, $getCommunitiesQuery);
+
+                    echo '<table class="table">';
+                    echo '<thead><tr><th>Nazwa</th><th>Opis</th><th>Akcja</th></tr></thead>';
+                    while ($community = mysqli_fetch_array($communities)) {
+                        echo '<tr>';
+                        $redirect = "window.location.href = 'joinCommunity.php?communityId=" . $community['id'] ."'";
+                        echo '<td>' . $community['name'] . '</td><td>' . $community['description'] . '</td><td><button onclick="'. $redirect . '" class="btn btn-success btn-sm">Dołącz</button></td>';
+                        echo '</tr>';
+                    }
+                    echo '</table>';
+                    ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

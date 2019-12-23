@@ -2,6 +2,7 @@
 session_start();
 $connection = new mysqli("localhost", "root", "", "buziabook");
 $postId = $_GET['postId'];
+$_SESSION['postId'] = $postId;
 
 echo $postId;
 
@@ -17,6 +18,11 @@ while ($row = mysqli_fetch_array($result)) {
 
 $_SESSION['comments'] = $array;
 mysqli_close($connection);
-header('Location: /buziaBook/src/user/wall.php');
+$url = '/buziaBook/src/user/wall.php?';
+if (isset($_GET['group'])) {
+    $url = $url . 'group='.$_GET['group'];
+}
+
+header('Location: ' . $url);
 
 ?>
